@@ -1,0 +1,58 @@
+@use "sass:list";
+@use "sass:map";
+@use "./variables" as v;
+@use "./mixins" as m;
+@use "./header";
+@use "./hero";
+@use "./categories";
+@use "./featured";
+@use "./about";
+@use "./scale";
+@use "./partner";
+@use "./footer";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Base
+// ═══════════════════════════════════════════════════════════════════════════
+
+:root {
+  --bs-body-font-family: #{v.$font-family};
+  --bs-primary: #{v.$primary};
+  --bs-link-color: #{v.$primary};
+  --bs-link-hover-color: #{v.$primary-dark};
+}
+
+html {
+  font-size: v.$fsize;
+  scroll-behavior: smooth;
+}
+
+body {
+  @include m.siteMain;
+  color: v.$text-dark;
+  background: v.$white;
+
+  &.offcanvas-open {
+    overflow: hidden;
+  }
+}
+
+a {
+  text-decoration: none;
+}
+
+// Keep the footer at the bottom of the window on short pages
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.site-main {
+  flex: 1 0 auto;
+}
+
+.site-container {
+  @include m.site-container;
+}

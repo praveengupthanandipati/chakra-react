@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <g transform="rotate(-35 32 28)">
+    <path pathLength="100" d="M22 20H42A8 8 0 0 1 42 36H22A8 8 0 0 1 22 20Z"/>
+    <path pathLength="100" d="M32 20V36"/>
+  </g>
+  <path class="accent" pathLength="100" d="M46 43L52 46.5V53.5L46 57L40 53.5V46.5Z"/>
+  <path class="accent" pathLength="100" d="M14 48V56M10 52H18"/>
+</svg>

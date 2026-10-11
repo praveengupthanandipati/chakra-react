@@ -1,0 +1,247 @@
+@use "./variables" as v;
+@use "./mixins" as m;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Home hero carousel
+// ═══════════════════════════════════════════════════════════════════════════
+
+.hero {
+  position: relative;
+  min-height: 60vh;
+  min-height: 60dvh;
+  overflow: hidden;
+  background: v.$primary;
+  color: v.$white;
+}
+
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease, visibility 0s 1s;
+
+  &.is-active {
+    position: relative;
+    min-height: inherit;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 1s ease;
+  }
+}
+
+// Slow Ken Burns zoom on the photo
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% center;
+  animation: hero-zoom 14s ease-out both;
+}
+
+// Navy wash for legibility + a soft green glow behind the headline
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 70% at 15% 60%, rgba(v.$secondary, 0.28), transparent 70%),
+    linear-gradient(90deg, rgba(v.$primary, 0.96) 0%, rgba(v.$primary, 0.85) 40%, rgba(v.$primary, 0.35) 75%, rgba(v.$primary, 0.15) 100%),
+    linear-gradient(0deg, rgba(v.$primary-dark, 0.7) 0%, transparent 35%);
+
+  @include m.mq-down(lg) {
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 60%, rgba(v.$secondary, 0.25), transparent 70%),
+      linear-gradient(90deg, rgba(v.$primary, 0.95), rgba(v.$primary, 0.75));
+  }
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  padding-block: 3.5rem 4rem;
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero__pulse {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: v.$secondary-light;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: inherit;
+    animation: hero-pulse 2s ease-out infinite;
+  }
+}
+
+.hero__title {
+  margin-bottom: 1.5rem;
+  font-size: clamp(2.4rem, 5.5vw, 4.75rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+
+  em {
+    font-style: normal;
+    background: linear-gradient(90deg, v.$secondary-light, v.$accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+// Each line slides up from behind a mask
+.hero__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em; // room for descenders
+
+  > span {
+    display: block;
+    animation: hero-line 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d) both;
+  }
+}
+
+.hero__text {
+  max-width: 600px;
+  margin-bottom: 2.25rem;
+  color: v.$text-on-dark;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-weight: 300;
+  line-height: 1.75;
+}
+
+.hero__stats {
+  @include m.reset-list;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2.5rem;
+
+  li {
+    padding-left: 1rem;
+    border-left: 2px solid v.$secondary;
+  }
+
+  strong {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  span {
+    color: v.$primary-light;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+  }
+}
+
+// Shared entrance: fade + rise, staggered via --d
+.hero .anim {
+  animation: hero-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d, 0s) both;
+}
+
+.hero__dots {
+  position: absolute;
+  bottom: 2rem;
+  right: 5%;
+  z-index: 2;
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    width: 10px;
+    height: 10px;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.4);
+    @include m.transition(width, background);
+
+    &.is-active { width: 32px; background: v.$secondary; }
+  }
+}
+
+.hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 1.75rem;
+  z-index: 2;
+  width: 24px;
+  height: 38px;
+  margin-left: -12px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-radius: 14px;
+  animation: hero-rise 0.8s ease 1.3s both;
+
+  span {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    width: 4px;
+    height: 8px;
+    margin-left: -2px;
+    border-radius: 4px;
+    background: v.$white;
+    animation: hero-scroll 1.8s ease-in-out infinite;
+  }
+
+  @include m.mq-down(md) { display: none; }
+}
+
+@keyframes hero-zoom {
+  from { transform: scale(1.15); }
+  to { transform: scale(1); }
+}
+
+@keyframes hero-line {
+  from { transform: translateY(110%); }
+  to { transform: none; }
+}
+
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes hero-pulse {
+  to { transform: scale(3); opacity: 0; }
+}
+
+@keyframes hero-scroll {
+  0% { opacity: 0; transform: translateY(0); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero *,
+  .hero *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

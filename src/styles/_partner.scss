@@ -1,0 +1,290 @@
+@use "sass:list";
+@use "./variables" as v;
+@use "./mixins" as m;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Partner / inquiry
+// ═══════════════════════════════════════════════════════════════════════════
+
+.partner {
+  position: relative;
+  padding-block: clamp(4.5rem, 9vw, 7rem);
+  background:
+    radial-gradient(ellipse 45% 55% at 0% 0%, rgba(v.$secondary, 0.1), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 100% 100%, rgba(v.$sky, 0.14), transparent 70%),
+    radial-gradient(ellipse 35% 40% at 85% 5%, rgba(v.$violet, 0.1), transparent 70%),
+    linear-gradient(160deg, v.$primary-tint 0%, v.$white 45%, v.$light-green 100%);
+
+  // honeycomb molecule pattern, faded toward the centre
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("../assets/svg/pattern-hex.svg") 0 0 / 34.64px 60px;
+    -webkit-mask-image: radial-gradient(ellipse at 30% 50%, transparent 25%, #000 85%);
+    mask-image: radial-gradient(ellipse at 30% 50%, transparent 25%, #000 85%);
+    pointer-events: none;
+  }
+}
+
+// ─── Feature list ─────────────────────────────────────────────────────────
+.partner__features {
+  @include m.reset-list;
+  display: grid;
+  gap: 0.85rem;
+
+  li {
+    display: flex;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid rgba(v.$primary, 0.08);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    @include m.transition(transform, box-shadow, border-color, background);
+
+    &:hover {
+      background: v.$white;
+      border-color: transparent;
+      box-shadow: 0 18px 36px -20px rgba(v.$primary, 0.3);
+      transform: translateX(6px);
+      .partner__icon { transform: rotate(-8deg) scale(1.06); }
+    }
+
+    .partner:not(.is-visible) & { opacity: 0; }
+    .partner.is-visible & { animation: partner-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--i) * 0.08s) backwards; }
+  }
+
+  h3 {
+    margin: 0.1rem 0 0.3rem;
+    color: v.$primary;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin: 0;
+    color: v.$text-muted;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+}
+
+.partner__icon {
+  @include m.icon-pill(linear-gradient(135deg, var(--c1), var(--c2)), 46px, 14px);
+  flex-shrink: 0;
+  color: v.$white;
+  font-size: 1.2rem;
+  box-shadow: 0 10px 20px -10px var(--c1);
+}
+
+// same vivid palette as the About stat cards
+@for $i from 1 through list.length(v.$vivid) {
+  .partner__features li:nth-child(#{$i}) {
+    --c1: #{list.nth(list.nth(v.$vivid, $i), 1)};
+    --c2: #{list.nth(list.nth(v.$vivid, $i), 2)};
+  }
+}
+
+.partner__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.75rem;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid rgba(v.$secondary, 0.25);
+    border-radius: 50px;
+    background: v.$white;
+    color: v.$primary;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    i { color: v.$secondary; font-size: 0.9rem; }
+  }
+}
+
+// ─── Inquiry card ─────────────────────────────────────────────────────────
+.inquiry-card {
+  position: relative;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: 24px;
+  background: v.$white;
+  box-shadow:
+    0 0 0 1px rgba(v.$primary, 0.05),
+    0 40px 80px -40px rgba(v.$primary, 0.35);
+
+  // gradient top edge
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    border-radius: 24px 24px 0 0;
+    background: linear-gradient(90deg, v.$primary, v.$secondary, v.$accent);
+  }
+
+  @include m.mq(lg) {
+    position: sticky;
+    top: calc(#{v.$header-height} + 1.5rem);
+  }
+
+  label:not(.inquiry-card__consent) {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: v.$primary;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  input:not([type="checkbox"]),
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid v.$gray-border;
+    border-radius: 12px;
+    background: v.$gray-50;
+    color: v.$primary;
+    font-size: 0.9rem;
+    outline: none;
+    @include m.transition(border-color, box-shadow, background);
+
+    &::placeholder { color: v.$gray-mid; }
+
+    &:focus {
+      background: v.$white;
+      border-color: v.$secondary;
+      box-shadow: 0 0 0 4px rgba(v.$secondary, 0.12);
+    }
+
+    // only after the user has interacted (no red on first load)
+    &:user-invalid {
+      border-color: v.$danger;
+      background: v.$danger-bg;
+    }
+  }
+
+  select {
+    appearance: none;
+    padding-right: 2.5rem;
+    background: v.$gray-50 url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2306194b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") no-repeat right 1rem center / 12px;
+    cursor: pointer;
+  }
+
+  textarea { resize: vertical; min-height: 110px; }
+}
+
+.inquiry-card__badge {
+  display: inline-block;
+  padding: 0.35rem 0.8rem;
+  border-radius: 50px;
+  background: v.$light-green;
+  color: v.$secondary-dark;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.inquiry-card__title {
+  margin: 0.9rem 0 0.4rem;
+  color: v.$primary;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.inquiry-card__lead {
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid v.$gray-border;
+  color: v.$text-muted;
+  font-size: 0.9rem;
+}
+
+.inquiry-card__consent {
+  display: flex;
+  gap: 0.6rem;
+  color: v.$text-muted;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  cursor: pointer;
+
+  input { flex-shrink: 0; width: 17px; height: 17px; margin-top: 2px; accent-color: v.$secondary; }
+}
+
+.inquiry-card__submit {
+  @include m.flex(center, center, 0.6rem);
+  width: 100%;
+  padding: 1rem;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(90deg, v.$primary, v.$primary-hover 50%, v.$secondary);
+  background-size: 200% 100%;
+  color: v.$white;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 16px 30px -14px rgba(v.$primary, 0.6);
+  transition: background-position 0.5s ease, transform v.$transition, box-shadow v.$transition;
+  @include m.focus-ring;
+
+  i { @include m.transition(transform); }
+
+  &:hover {
+    background-position: 100% 0;
+    transform: translateY(-2px);
+    box-shadow: 0 20px 34px -14px rgba(v.$secondary, 0.6);
+    i { transform: translate(3px, -3px); }
+  }
+}
+
+.inquiry-card__note {
+  @include m.flex(center, center, 0.4rem);
+  margin: 0.9rem 0 0;
+  color: v.$text-muted;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+
+  i { color: v.$secondary; }
+}
+
+.inquiry-card__success {
+  padding: 2rem 0.5rem;
+  text-align: center;
+  animation: partner-rise 0.6s ease both;
+
+  > span {
+    @include m.icon-pill(v.$light-green, 84px, 50%);
+    margin: 0 auto 1.25rem;
+    color: v.$secondary;
+    font-size: 2.6rem;
+  }
+
+  h3 { color: v.$primary; font-weight: 700; }
+  p { margin-bottom: 1.75rem; color: v.$text-muted; }
+}
+
+@keyframes partner-rise {
+  from { opacity: 0; transform: translateY(24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partner__features li { opacity: 1 !important; animation: none !important; }
+}

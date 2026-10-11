@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <path pathLength="100" d="M30 20L40.4 26V38L30 44L19.6 38V26Z"/>
+  <path pathLength="100" d="M40.4 26L49.5 20.5M30 44V53M19.6 26L11.5 21"/>
+  <path class="accent" pathLength="100" d="M24 32A6 6 0 1 0 36 32A6 6 0 1 0 24 32"/>
+  <path class="accent" pathLength="100" d="M49.6 18.5A3 3 0 1 0 55.6 18.5A3 3 0 1 0 49.6 18.5M27 56A3 3 0 1 0 33 56A3 3 0 1 0 27 56M5.4 19.5A3 3 0 1 0 11.4 19.5A3 3 0 1 0 5.4 19.5"/>
+</svg>

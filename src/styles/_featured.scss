@@ -1,0 +1,230 @@
+@use "./variables" as v;
+@use "./mixins" as m;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Featured materials carousel
+// ═══════════════════════════════════════════════════════════════════════════
+
+.featured {
+  padding-block: clamp(4rem, 8vw, 6.5rem);
+  background:
+    radial-gradient(circle at 5% 90%, rgba(v.$primary, 0.05), transparent 40%),
+    v.$white;
+}
+
+.featured__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+  margin-bottom: 2.5rem;
+
+  > div:first-child { max-width: 760px; }
+}
+
+.featured__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  button {
+    @include m.icon-pill(v.$white, 46px, 50%);
+    border: 1px solid v.$gray-border;
+    color: v.$primary;
+    @include m.focus-ring;
+
+    &:hover:not(:disabled) { background: v.$primary; border-color: v.$primary; color: v.$white; }
+    &:disabled { opacity: 0.4; cursor: default; }
+  }
+}
+
+.featured__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 46px;
+  margin-left: 0.4rem;
+  padding: 0 1.4rem;
+  border-radius: 50px;
+  background: v.$secondary;
+  color: v.$white;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  @include m.transition(background, box-shadow);
+  @include m.focus-ring;
+
+  i { @include m.transition(transform); }
+
+  &:hover {
+    color: v.$white;
+    background: v.$secondary-dark;
+    box-shadow: 0 12px 24px -12px rgba(v.$secondary, 0.8);
+    i { transform: translateX(4px); }
+  }
+}
+
+// ─── Track: native scroll-snap so touch swipe works everywhere ────────────
+.featured__track {
+  --gap: 1.5rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 82%;
+  column-gap: var(--gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  // room for the hover lift + shadow without clipping
+  padding: 0.75rem 0.25rem 2.25rem;
+  margin: -0.75rem -0.25rem -1.5rem;
+  outline: none;
+
+  &::-webkit-scrollbar { display: none; }
+
+  @include m.mq(sm) { grid-auto-columns: calc((100% - var(--gap)) / 2); }
+  @include m.mq(lg) { grid-auto-columns: calc((100% - 2 * var(--gap)) / 3); }
+  @include m.mq(xl) { grid-auto-columns: calc((100% - 3 * var(--gap)) / 4); }
+}
+
+// ─── Card ─────────────────────────────────────────────────────────────────
+.material-card {
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  overflow: hidden;
+  border: 1px solid v.$gray-border;
+  border-radius: 20px;
+  background: v.$white;
+  color: v.$primary;
+  @include m.transition(transform, box-shadow, border-color);
+  @include m.focus-ring;
+
+  &:hover {
+    color: v.$primary;
+    border-color: rgba(v.$secondary, 0.5);
+    box-shadow: 0 28px 50px -24px rgba(v.$primary, 0.35);
+    transform: translateY(-6px);
+  }
+}
+
+.material-card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  // dotted lab-paper grid; the white structure image blends into it
+  background:
+    radial-gradient(rgba(v.$primary, 0.1) 1px, transparent 1.5px) 0 0 / 16px 16px,
+    linear-gradient(160deg, v.$primary-tint, v.$white 70%);
+
+  img {
+    width: 100%;
+    height: 100%;
+    padding: 2.75rem 1.5rem 1rem;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    @include m.transition(transform);
+  }
+
+  .material-card:hover & img { transform: scale(1.08) rotate(-2deg); }
+}
+
+.material-card__cas,
+.material-card__purity {
+  position: absolute;
+  top: 0.9rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.material-card__cas {
+  left: 0.9rem;
+  background: v.$white;
+  color: v.$primary;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  box-shadow: 0 4px 12px -6px rgba(v.$primary, 0.3);
+}
+
+.material-card__purity {
+  right: 0.9rem;
+  border-radius: 50px;
+  background: v.$secondary;
+  color: v.$white;
+}
+
+.material-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.25rem 1.4rem 1.2rem;
+
+  h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.35;
+    @include m.transition(color);
+
+    .material-card:hover & { color: v.$secondary; }
+  }
+
+  p {
+    flex: 1;
+    margin-bottom: 1rem;
+    color: v.$text-muted;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+}
+
+.material-card__foot {
+  @include m.flex(space-between, center, 0.75rem);
+  padding-top: 0.9rem;
+  border-top: 1px solid v.$gray-border;
+
+  span {
+    color: v.$text-muted;
+    font-size: 0.72rem;
+    font-weight: 500;
+  }
+
+  strong {
+    flex-shrink: 0;
+    color: v.$secondary;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    i { display: inline-block; @include m.transition(transform); }
+    .material-card:hover & i { transform: translateX(4px); }
+  }
+}
+
+// ─── Progress bar ─────────────────────────────────────────────────────────
+.featured__progress {
+  height: 3px;
+  margin-top: 1rem;
+  border-radius: 3px;
+  background: v.$gray-border;
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, v.$primary, v.$secondary);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featured__track { scroll-behavior: auto; }
+  .material-card,
+  .material-card__media img { transition: none; }
+}

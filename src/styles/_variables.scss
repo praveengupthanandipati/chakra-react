@@ -1,0 +1,166 @@
+@use "sass:map"; //Other variables
+$fsize: 16px;
+$font-family: "Poppins", sans-serif;
+
+// ─── Brand palette (Chakrachem) ───────────────────────────────────────────
+// Primary   → deep navy (#06194B), base shade is Primary-30
+// Secondary → brand green (#009140), base shade is secondary-40
+// Accent    → fresh lime highlight
+// Scale: 10 = darkest … 90 = lightest tint
+
+//define a color variables
+$colors: (
+  "primary-color": #06194b,
+  "Primary-10": #020a1e,
+  "Primary-20": #041235,
+  "Primary-30": #06194b,
+  "Primary-40": #2b3c66,
+  "Primary-50": #515e81,
+  "Primary-60": #76819c,
+  "Primary-70": #9ba3b7,
+  "Primary-80": #c1c6d2,
+  "Primary-90": #e6e8ed,
+  "secondary-color": #009140,
+  "secondary-10": #003316,
+  "secondary-20": #005023,
+  "secondary-30": #007132,
+  "secondary-40": #009140,
+  "secondary-50": #33a766,
+  "secondary-60": #61bb89,
+  "secondary-70": #8ccea9,
+  "secondary-80": #b8e0ca,
+  "secondary-90": #e6f4ec,
+  "accent-color": #8cc63f,
+  "white-color": #fff,
+  "black-color": #000,
+  "black-10": #121212,
+  "black-20": #242424,
+  "black-30": #373737,
+  "black-40": #494949,
+  "black-50": #5B5B5B,
+  "black-60": #6D6D6D,
+  "black-70": #808080,
+  "black-80": #929292,
+  "black-90": #A4A4A4,
+  "black-100": #d4d4d4,
+  "black-110": #f0efef,
+  "red-color": #ff0000,
+);
+
+//loop colours
+@each $color-name, $color-value in $colors {
+  .bg-#{$color-name} {
+    background-color: $color-value;
+  }
+  .text-#{$color-name} {
+    color: $color-value;
+  }
+  .border-#{$color-name} {
+    border: 1px solid $color-value;
+  }
+}
+
+//examples using
+/**
+<div className="bg-primary-color text-white-color p-3"></div>
+<div className="border-white-color p-3"></div>
+**/
+
+//Font Weights Map
+$font-weights: (
+  "light": 300,
+  "regular": 400,
+  "medium": 500,
+  "semibold": 600,
+  "bold": 700,
+);
+
+//Loop $weight-name, $weight-value in $font-weights
+@each $weight-name, $weight-value in $font-weights {
+  .font-#{$weight-name} {
+    font-weight: $weight-value;
+  }
+}
+
+/*
+<p className="font-light">This text has a light font weight.</p>
+*/
+
+//device breakpoints
+$breakpoints: (
+  "xs": 0,
+  "sm": 576px,
+  "md": 768px,
+  "lg": 992px,
+  "xl": 1200px,
+  "xxl": 1400px,
+);
+
+// ─── Brand token shortcuts ────────────────────────────────────────────────
+// Pull named scalars so partials can reference $var directly via the v. namespace
+// instead of repeating raw hex values.
+
+// Primary (navy)
+$primary:        map.get($colors, "primary-color");
+$primary-dark:   map.get($colors, "Primary-20");   // pressed / active states
+$primary-hover:  map.get($colors, "Primary-40");   // hover shade
+$primary-light:  map.get($colors, "Primary-70");   // focus ring / light navy
+$primary-line:   rgba(255, 255, 255, 0.12);        // dividers on navy
+$accent:         map.get($colors, "accent-color"); // lime highlight
+
+// Secondary (green)
+$secondary:       map.get($colors, "secondary-color");
+$secondary-dark:  map.get($colors, "secondary-30");  // pressed / active states
+$secondary-hover: map.get($colors, "secondary-50");  // hover shade
+$secondary-light: map.get($colors, "secondary-70");  // light green
+$secondary-line:  rgba(255, 255, 255, 0.12);         // dividers on green
+
+// Neutral surface
+$white:          #fff;
+$primary-tint:   map.get($colors, "Primary-90");   // navy tint background
+$light-green:    map.get($colors, "secondary-90"); // green tint / hover background
+$gray-50:        #f9f9f9;   // input / card surface
+$gray-border:    #e4e4e4;   // border / divider line
+
+// Text
+$gray-mid:       #a4a4a4;   // = "black-90" — placeholder, muted icon
+$text-dark:      #242424;   // = "black-20" — primary body text
+$text-muted:     #5b5b5b;   // = "black-50" — secondary / label text
+$text-on-dark:   rgba(255, 255, 255, 0.92);
+
+// Social brand colours
+$social: (
+  "facebook":  #3b5998,
+  "instagram": linear-gradient(45deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%),
+  "youtube":   #e62117,
+  "linkedin":  #0a66c2,
+);
+
+$whatsapp:       #25d366;
+$whatsapp-dark:  #1da851;
+
+// Vivid accents for dark gradient sections
+$sky:        #38bdf8;
+$violet:     #a78bfa;
+$navy-blue:  #0a2f5c;   // bridges navy → green in gradients
+
+// each pair = gradient start, end
+$vivid: (
+  (#00b050, $accent),      // brand green → lime
+  ($sky, #2563eb),         // sky → blue
+  (#fbbf24, #f97316),      // amber → orange
+  ($violet, #ec4899),      // violet → pink
+  (#2dd4bf, $secondary),   // teal → brand green
+);
+
+// Semantic
+$danger:         #dc3545;
+$danger-dark:    #b02a37;
+$danger-bg:      #fff5f5;
+
+// Layout
+$container-width: 90%;
+$header-height:    78px;
+$header-height-sm: 66px;
+$offcanvas-width:  320px;
+$transition:       0.3s ease;

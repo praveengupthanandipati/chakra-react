@@ -1,0 +1,232 @@
+@use "./variables" as v;
+@use "./mixins" as m;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Section headings (shared)
+// ═══════════════════════════════════════════════════════════════════════════
+
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  color: v.$secondary;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+
+  &::before {
+    content: "";
+    width: 28px;
+    height: 2px;
+    border-radius: 2px;
+    background: v.$secondary;
+  }
+}
+
+.section-title {
+  margin-bottom: 0.75rem;
+  color: v.$primary;
+  font-size: clamp(1.9rem, 3.5vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+
+  em { font-style: normal; color: v.$secondary; }
+}
+
+.section-lead {
+  max-width: 560px;
+  margin: 0;
+  color: v.$text-muted;
+  font-size: 1rem;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Categories
+// ═══════════════════════════════════════════════════════════════════════════
+
+.categories {
+  padding-block: clamp(4rem, 8vw, 6.5rem);
+  background:
+    radial-gradient(circle at 90% 10%, rgba(v.$secondary, 0.06), transparent 40%),
+    v.$gray-50;
+}
+
+.categories__head { margin-bottom: 3rem; }
+
+.cat-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid v.$gray-border;
+  border-radius: 20px;
+  background: v.$white;
+  color: v.$primary;
+  @include m.transition(transform, box-shadow, border-color);
+
+  // entrance: hidden until the section is in view, staggered by --i
+  .categories:not(.is-visible) & { opacity: 0; }
+  .is-visible & { animation: cat-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--i) * 0.12s) backwards; }
+
+  &:hover {
+    color: v.$primary;
+    border-color: transparent;
+    box-shadow: 0 30px 60px -25px rgba(v.$primary, 0.35);
+    transform: translateY(-8px);
+  }
+}
+
+// ─── Icon panel ───────────────────────────────────────────────────────────
+.cat-card__visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  // dotted lab-grid pattern over a soft navy tint
+  background:
+    radial-gradient(rgba(v.$primary, 0.12) 1px, transparent 1.5px) 0 0 / 18px 18px,
+    linear-gradient(160deg, v.$primary-tint, v.$white);
+  color: v.$primary;
+  @include m.transition(color);
+
+  // navy wash that fades in on hover
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 45%, rgba(v.$secondary, 0.35), transparent 60%),
+      linear-gradient(160deg, v.$primary, v.$primary-dark);
+    opacity: 0;
+    @include m.transition(opacity);
+  }
+
+  .cat-card:hover & { color: v.$white; }
+  .cat-card:hover &::before { opacity: 1; }
+}
+
+// Dashed orbit ring that keeps rotating around the icon
+.cat-card__ring {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 1.5px dashed rgba(v.$secondary, 0.45);
+  border-radius: 50%;
+  animation: cat-spin 18s linear infinite;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 18px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: v.$secondary;
+    box-shadow: 0 0 0 5px rgba(v.$secondary, 0.18);
+  }
+}
+
+.cat-card__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: v.$white;
+  box-shadow: 0 18px 40px -16px rgba(v.$primary, 0.35);
+  @include m.transition(background, transform);
+
+  svg { width: 64px; height: 64px; overflow: visible; }
+
+  // the stroke-offset "line drawing" loop: draw → hold → erase
+  path {
+    stroke-dasharray: 100;
+    animation: cat-draw 4.5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.35s);
+  }
+
+  .accent {
+    stroke: v.$secondary;
+    animation-delay: calc(var(--i) * 0.35s + 0.5s);
+  }
+
+  .cat-card:hover & {
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(1.06);
+    .accent { stroke: v.$secondary-light; }
+  }
+}
+
+.cat-card__count {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 50px;
+  background: v.$white;
+  color: v.$secondary-dark;
+  font-size: 0.72rem;
+  font-weight: 700;
+  box-shadow: 0 6px 16px -8px rgba(v.$primary, 0.3);
+}
+
+// ─── Text ─────────────────────────────────────────────────────────────────
+.cat-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.5rem 1.5rem 1.6rem;
+
+  h3 {
+    margin-bottom: 0.6rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  p {
+    flex: 1;
+    margin-bottom: 1.25rem;
+    color: v.$text-muted;
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+}
+
+.cat-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: v.$secondary;
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  i { @include m.transition(transform); }
+  .cat-card:hover & i { transform: translateX(5px); }
+}
+
+@keyframes cat-draw {
+  0% { stroke-dashoffset: 100; }
+  40%, 70% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -100; }
+}
+
+@keyframes cat-rise {
+  from { opacity: 0; transform: translateY(30px); }
+}
+
+@keyframes cat-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-card { opacity: 1 !important; animation: none !important; }
+  .cat-card__icon path { animation: none; stroke-dasharray: none; }
+  .cat-card__ring { animation: none; }
+}

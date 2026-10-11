@@ -1,0 +1,288 @@
+@use "sass:list";
+@use "./variables" as v;
+@use "./mixins" as m;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// About / track record
+// ═══════════════════════════════════════════════════════════════════════════
+
+.about {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(4.5rem, 9vw, 7rem);
+  color: v.$white;
+  background:
+    // colourful glows
+    radial-gradient(ellipse 40% 50% at 10% 0%, rgba(v.$secondary, 0.45), transparent 70%),
+    radial-gradient(ellipse 35% 45% at 95% 15%, rgba(v.$sky, 0.28), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 70% 100%, rgba(v.$violet, 0.25), transparent 70%),
+    radial-gradient(ellipse 30% 40% at 0% 100%, rgba(v.$accent, 0.2), transparent 70%),
+    linear-gradient(135deg, v.$primary-dark 0%, v.$primary 45%, v.$navy-blue 75%, v.$secondary-dark 130%);
+
+  // faint dot grid that fades toward the edges
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1.5px) 0 0 / 22px 22px;
+    -webkit-mask-image: radial-gradient(ellipse at 60% 40%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse at 60% 40%, #000 20%, transparent 75%);
+    pointer-events: none;
+  }
+
+  // headings on dark
+  .section-eyebrow { color: v.$secondary-light; &::before { background: v.$secondary-light; } }
+  .section-title { color: v.$white; em { color: transparent; background: linear-gradient(90deg, v.$secondary-light, v.$accent, v.$sky); -webkit-background-clip: text; background-clip: text; } }
+  .section-lead { max-width: 720px; color: v.$text-on-dark; opacity: 0.85; }
+}
+
+// ─── Decorative globe + orbits ────────────────────────────────────────────
+.about__globe {
+  position: absolute;
+  top: -8%;
+  right: -6%;
+  font-size: clamp(18rem, 38vw, 34rem);
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.04);
+  animation: about-float 12s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.about__orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+  animation: about-spin 60s linear infinite;
+
+  // glowing satellite dot
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: v.$secondary-light;
+    box-shadow: 0 0 18px 4px rgba(v.$secondary-light, 0.7);
+  }
+
+  &--1 { width: 620px; height: 620px; top: -260px; right: -120px; }
+  &--2 {
+    width: 900px; height: 900px; top: -400px; right: -260px;
+    animation-duration: 90s;
+    animation-direction: reverse;
+    &::after { background: v.$sky; box-shadow: 0 0 18px 4px rgba(v.$sky, 0.7); }
+  }
+}
+
+.about__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: v.$white;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  @include m.transition(background, color, border-color);
+  @include m.focus-ring(v.$secondary-light);
+
+  i { @include m.transition(transform); }
+
+  &:hover {
+    background: v.$white;
+    border-color: v.$white;
+    color: v.$primary;
+    i { transform: translateX(4px); }
+  }
+}
+
+// ─── Stat cards (glass) ───────────────────────────────────────────────────
+.stat-card {
+  position: relative;
+  height: 100%;
+  padding: 1.6rem 1.5rem 1.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  @include m.transition(transform, border-color, box-shadow);
+
+  // coloured top bar
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, var(--c1), var(--c2));
+  }
+
+  // coloured glow in the corner
+  &::after {
+    content: "";
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: var(--c1);
+    opacity: 0.12;
+    filter: blur(30px);
+    @include m.transition(opacity);
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 30px 50px -25px rgba(0, 0, 0, 0.6);
+    &::after { opacity: 0.3; }
+    .stat-card__icon { transform: rotate(-8deg) scale(1.08); }
+  }
+
+  // entrance once the section is visible
+  .about:not(.is-visible) & { opacity: 0; }
+  .about.is-visible & { animation: about-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--i) * 0.1s) backwards; }
+
+  h3 {
+    margin: 0.35rem 0 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin: 0;
+    color: v.$text-on-dark;
+    opacity: 0.72;
+    font-size: 0.84rem;
+    line-height: 1.6;
+  }
+}
+
+// one vivid gradient per card
+@for $i from 1 through list.length(v.$vivid) {
+  .about__stats > :nth-child(#{$i}) .stat-card {
+    --c1: #{list.nth(list.nth(v.$vivid, $i), 1)};
+    --c2: #{list.nth(list.nth(v.$vivid, $i), 2)};
+  }
+}
+
+.stat-card__top { @include m.flex(space-between, center); margin-bottom: 1.25rem; }
+
+.stat-card__icon {
+  @include m.icon-pill(linear-gradient(135deg, var(--c1), var(--c2)), 50px, 14px);
+  color: v.$white;
+  font-size: 1.35rem;
+  box-shadow: 0 12px 24px -10px var(--c1);
+}
+
+.stat-card__tag {
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50px;
+  color: v.$white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.stat-card__value {
+  font-size: clamp(2.4rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+
+  span {
+    margin-left: 0.1rem;
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+// ─── Trust strip ──────────────────────────────────────────────────────────
+.trust-strip {
+  @include m.reset-list;
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  @include m.mq(md) { grid-template-columns: repeat(2, 1fr); }
+  @include m.mq(xl) { grid-template-columns: repeat(4, 1fr); }
+
+  li {
+    @include m.flex(flex-start, center, 0.9rem);
+    padding: 1.2rem 1.4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    &:last-child { border-bottom: 0; }
+
+    @include m.mq(md) {
+      &:nth-child(odd) { border-right: 1px solid rgba(255, 255, 255, 0.08); }
+      &:nth-last-child(-n + 2) { border-bottom: 0; }
+    }
+
+    @include m.mq(xl) {
+      border-bottom: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      &:last-child { border-right: 0; }
+    }
+  }
+
+  strong {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  small { color: v.$text-on-dark; opacity: 0.7; font-size: 0.78rem; }
+}
+
+.trust-strip__icon {
+  @include m.icon-pill(rgba(v.$secondary-light, 0.15), 42px, 50%);
+  flex-shrink: 0;
+  color: v.$secondary-light;
+  font-size: 1.15rem;
+  box-shadow: inset 0 0 0 1px rgba(v.$secondary-light, 0.35);
+}
+
+@keyframes about-rise {
+  from { opacity: 0; transform: translateY(30px); }
+}
+
+@keyframes about-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes about-float {
+  50% { transform: translateY(-20px) rotate(4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about__orbit,
+  .about__globe { animation: none; }
+  .stat-card { opacity: 1 !important; animation: none !important; }
+}

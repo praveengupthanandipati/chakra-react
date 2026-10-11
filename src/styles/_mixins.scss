@@ -1,0 +1,120 @@
+@use "sass:map";
+@use "sass:list";
+@use "./variables" as v;
+
+@mixin siteMain {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  font-family: v.$font-family;
+}
+
+// ─── Responsive helpers ───────────────────────────────────────────────────
+
+// Mobile-first: styles apply from the given breakpoint and up
+// @include mq(lg) { ... }
+@mixin mq($bp) {
+  @media (min-width: map.get(v.$breakpoints, $bp)) {
+    @content;
+  }
+}
+
+// Desktop-first: styles apply below the given breakpoint
+// @include mq-down(xl) { ... }
+@mixin mq-down($bp) {
+  @media (max-width: (map.get(v.$breakpoints, $bp) - 0.02px)) {
+    @content;
+  }
+}
+
+// ─── Layout helpers ───────────────────────────────────────────────────────
+
+// Content wrapper — 90% of the viewport, centred
+@mixin site-container {
+  width: v.$container-width;
+  margin-inline: auto;
+}
+
+@mixin flex($justify: flex-start, $align: center, $gap: 0) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+}
+
+@mixin flex-center {
+  @include flex(center, center);
+}
+
+@mixin reset-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin transition($props...) {
+  @if list.length($props) == 0 {
+    transition: all v.$transition;
+  } @else {
+    $list: ();
+    @each $p in $props {
+      $list: list.append($list, $p v.$transition, comma);
+    }
+    transition: $list;
+  }
+}
+
+// ─── Shared UI helpers ────────────────────────────────────────────────────
+
+// Apply the project typeface — use wherever Bootstrap's default must be overridden
+@mixin poppins {
+  font-family: v.$font-family;
+}
+
+// Visible keyboard focus ring in the brand colour
+@mixin focus-ring($color: v.$primary-light) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 3px;
+  }
+}
+
+// Square pill container used for icon buttons
+@mixin icon-pill($bg: v.$primary, $size: 46px, $radius: 12px) {
+  width: $size;
+  height: $size;
+  background: $bg;
+  border-radius: $radius;
+  @include flex-center;
+  @include transition(background, transform);
+}
+
+// Round social icon in the brand colour of the network
+@mixin social-icon($network, $size: 30px) {
+  @include icon-pill(map.get(v.$social, $network), $size, 50%);
+}
+
+// Animated underline used on nav links
+@mixin underline-hover($color: v.$primary, $height: 2px) {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: $height;
+    border-radius: $height;
+    background: $color;
+    transform: scaleX(0);
+    transform-origin: left;
+    @include transition(transform);
+  }
+
+  &:hover::after,
+  &.active::after {
+    transform: scaleX(1);
+  }
+}
